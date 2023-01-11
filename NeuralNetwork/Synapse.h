@@ -7,6 +7,7 @@ class Synapse
 public:
     Synapse();
     Synapse(Neuron* NewStartNeuron, Neuron* NewEndNeuron, long double NewWeight);
+    virtual ~Synapse() = default;
 
     long double GetWeight() const;
     void SetWeight(const long double NewWeight);

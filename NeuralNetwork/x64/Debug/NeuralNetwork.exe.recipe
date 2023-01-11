@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\RiderProjects\NeuralNetwork\x64\Debug\NeuralNetwork.exe</FullPath>
+      <FullPath>D:\Github\NeuralNet\x64\Debug\NeuralNetwork.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

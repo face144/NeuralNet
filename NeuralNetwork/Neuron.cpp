@@ -10,13 +10,17 @@ Neuron::Neuron()
     Value = 0;
     Inputs = std::vector<Synapse*>();
     Outputs = std::vector<Synapse*>();
+    Delta = 0;
+    Type = ENeuronType::Normal;
 }
 
-Neuron::Neuron(std::vector<Synapse*> NewInputs, std::vector<Synapse*> NewOutputs, long double NewValue)
+Neuron::Neuron(const std::vector<Synapse*>& NewInputs, const std::vector<Synapse*>& NewOutputs, const long double& NewValue, const ENeuronType& NeuronType)
 {
     Inputs = NewInputs;
     Outputs = NewOutputs;
     Value = NewValue;
+    Delta = 0;
+    Type = NeuronType;
 }
 
 void Neuron::AddInput(Neuron* NewInput)
@@ -30,6 +34,26 @@ void Neuron::AddInput(Neuron* NewInput)
 std::vector<Synapse*>* Neuron::GetInputs()
 {
     return &Inputs;
+}
+
+Neuron* Neuron::GetInputAt(const int& Index) const
+{
+    return Inputs[Index]->GetStartNeuron();
+}
+
+Neuron* Neuron::GetInputAt(const size_t& Index) const
+{
+    return Inputs[Index]->GetStartNeuron();
+}
+
+Neuron* Neuron::GetOutputAt(const int& Index) const
+{
+    return Outputs[Index]->GetEndNeuron();
+}
+
+Neuron* Neuron::GetOutputAt(const size_t& Index) const
+{
+    return Outputs[Index]->GetEndNeuron();
 }
 
 void Neuron::AddOutput(Neuron* NewOutput)
@@ -56,19 +80,49 @@ long double Neuron::GetValue() const
     return Value;
 }
 
-long double Neuron::GetWeight(unsigned Index) const
+long double Neuron::GetWeight(const unsigned& Index) const
 {
     return Inputs[Index]->GetWeight();
 }
 
-void Neuron::SetWeight(const unsigned Index, const long double NewWeight)
+long double Neuron::GetWeight(const size_t& Index) const
+{
+    return Inputs[Index]->GetWeight();
+}
+
+void Neuron::SetWeight(const unsigned& Index, const long double& NewWeight)
 {
     Inputs[Index]->SetWeight(NewWeight);
 }
 
+void Neuron::SetWeight(const size_t& Index, const long double& NewWeight)
+{
+    Inputs[Index]->SetWeight(NewWeight);
+}
+
+long double Neuron::GetDelta() const
+{
+    return Delta;
+}
+
+void Neuron::SetDelta(const long double& NewDelta)
+{
+    Delta = NewDelta;
+}
+
+ENeuronType Neuron::GetNeuronType() const
+{
+    return Type;
+}
+
+void Neuron::SetNeuronType(const ENeuronType& NewNeuronType)
+{
+    Type = NewNeuronType;
+}
+
 void Neuron::Fire()
 {
-    long double Temp_Value = CalculateNewValue();
+    const long double Temp_Value = CalculateNewValue();
     Value = Sigmoid(Temp_Value);
 }
 
@@ -76,15 +130,25 @@ long double Neuron::CalculateNewValue() const
 {
     long double NewValue = 0.0;
     
-    for (int i = 0; i < Inputs.size(); i++)
+    for (const auto Input : Inputs)
     {
-        NewValue += Inputs[i]->GetWeight() * Inputs[i]->GetStartNeuronValue();
+        NewValue += Input->GetWeight() * Input->GetStartNeuronValue();
     }
     
     return NewValue;
 }
 
-long double Neuron::Sigmoid(const long double x) const
+void Neuron::CalculateDelta(const long double& Error)
+{
+    Delta = Error * SigmoidDerivative(Value);
+}
+
+long double Neuron::Sigmoid(const long double& x) const
 {
     return 1 / (1 + std::exp(-x));
+}
+
+long double Neuron::SigmoidDerivative(const long double& x) const
+{
+    return x * (1 - x);
 }
