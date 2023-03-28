@@ -1,4 +1,2 @@
 # NeuralNet
-Neural Network C++ Library
-
-NeuralNet is a c++ framework to aid in building neural networks
+NeuralNet is a C++ framework to aid in building neural networks
